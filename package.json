@@ -1,0 +1,13 @@
+{
+  "name": "react-native-widget-manager",
+  "version": "1.0.0",
+  "description": "Provide an API to force native Android widgets reload and getting their ids",
+  "license": "MIT",
+  "author": "Maxim Erekhinskiy",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "github.com/nightflash/react-native-widget-manager.git"
+  },
+  "keywords": ["react-native", "react-component", "android", "widgets"]
+}
