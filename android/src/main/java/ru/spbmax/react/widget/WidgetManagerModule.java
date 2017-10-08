@@ -1,6 +1,5 @@
 package ru.spbmax.react.widget;
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,8 +9,6 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
 
@@ -32,32 +29,25 @@ public class WidgetManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void reloadWidgets(final Promise promise) {
-        Activity activity = getCurrentActivity();
+        int [] ids = _getIds();
 
-        if (activity != null) {
-            int [] ids = this._getIds();
+        sendUpdateIntent(ids);
 
-            Intent intent = new Intent();
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-            activity.sendBroadcast(intent);
-
-            promise.resolve(ids.length);
-        } else {
-            promise.reject("noActivity", "no running activity");
-        }
+        promise.resolve(_convertIds(ids));
     }
 
     @ReactMethod
     public void getWidgetIds(final Promise promise) {
-        int [] ids = this._getIds();
+        promise.resolve(_convertIds(_getIds()));
+    }
 
-        WritableArray resultArray = new WritableNativeArray();
-        for (int i = 0; i < ids.length; i++) {
-            resultArray.pushInt(ids[i]);
-        }
+    private void sendUpdateIntent(int[] ids) {
+        Context context = reactContext.getApplicationContext();
 
-        promise.resolve(resultArray);
+        Intent intent = new Intent();
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        context.sendBroadcast(intent);
     }
 
     private int[] _getIds() {
@@ -66,6 +56,15 @@ public class WidgetManagerModule extends ReactContextBaseJavaModule {
         AppWidgetManager man = AppWidgetManager.getInstance(context);
         return man.getAppWidgetIds(
                 new ComponentName(context, this.widgetClass));
+    }
+
+    private WritableArray _convertIds(int[] ids) {
+        WritableArray resultArray = new WritableNativeArray();
+        for (int i = 0; i < ids.length; i++) {
+            resultArray.pushInt(ids[i]);
+        }
+
+        return resultArray;
     }
 
 }

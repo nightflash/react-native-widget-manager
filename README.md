@@ -22,6 +22,10 @@ react-native link react-native-widget-manager
 new WidgetManagerPackage(Widget.class)
 ``` 
 
+where *Widget* is your widget provider java class (you should have Widget.java in your source code)
+
+https://developer.android.com/guide/topics/appwidgets/index.html
+
 ## API
 
 Works for **Android only** but safe to execute on iOS.
