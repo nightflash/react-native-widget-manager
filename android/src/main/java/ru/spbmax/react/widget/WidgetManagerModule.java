@@ -28,8 +28,16 @@ public class WidgetManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void reloadWidgets(final Promise promise) {
+    public void reloadWidgets(final Integer delay, final Promise promise) {
         int [] ids = _getIds();
+
+        if (delay != null && delay > 0) {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                promise.reject(e);
+            }
+        }
 
         sendUpdateIntent(ids);
 

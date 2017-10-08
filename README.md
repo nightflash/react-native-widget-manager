@@ -30,9 +30,17 @@ https://developer.android.com/guide/topics/appwidgets/index.html
 
 Works for **Android only** but safe to execute on iOS.
 
-### `reloadWidgets`
+### `reloadWidgets(delay)`
+
 
 Reload all widgets that were instantiated from your Widget.java (Do nothing on iOS)
+
+ - There is a bug in React/Android/Headless JS that you can't use *setTimeout* inside a background task,
+ so you may need a way to reload your widgets after `JS -> Native` synchronization. 
+ For example after `AsyncStorage` save; For this case you can use this delay.
+ I suggest to use less than 1 second (1000) values because it will lock the thread.
+ If you don't need any sync keep it 0 or don't define it.
+
   
 
 ### `getWidgetIds`
