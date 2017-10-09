@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -23,25 +24,37 @@ public class WidgetManagerModule extends ReactContextBaseJavaModule {
         this.widgetClass = widgetClass;
     }
 
+    final private String _moduleName = "RNWidgetManager";
+
     public String getName() {
-        return "RNWidgetManager";
+        return _moduleName;
     }
 
     @ReactMethod
     public void reloadWidgets(final Integer delay, final Promise promise) {
-        int [] ids = _getIds();
+        Log.d(_moduleName, "Reload widgets method, delay: " + delay);
+
+        final int [] ids = _getIds();
 
         if (delay != null && delay > 0) {
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                promise.reject(e);
-            }
+            new Thread() {
+                public void run() {
+                    try {
+                        Log.d(_moduleName, "Reload widgets delayed");
+                        Thread.sleep(delay);
+
+                        Log.d(_moduleName, "Reload widgets delay finished");
+                        _sendUpdateIntent(ids);
+                        promise.resolve(_convertIds(ids));
+                    } catch(InterruptedException e) {
+                        promise.reject(e);
+                    }
+                }
+            }.start();
+        } else {
+            _sendUpdateIntent(ids);
+            promise.resolve(_convertIds(ids));
         }
-
-        sendUpdateIntent(ids);
-
-        promise.resolve(_convertIds(ids));
     }
 
     @ReactMethod
@@ -49,7 +62,8 @@ public class WidgetManagerModule extends ReactContextBaseJavaModule {
         promise.resolve(_convertIds(_getIds()));
     }
 
-    private void sendUpdateIntent(int[] ids) {
+    private void _sendUpdateIntent(int[] ids) {
+        Log.d(_moduleName, "Sending reload intent");
         Context context = reactContext.getApplicationContext();
 
         Intent intent = new Intent();
