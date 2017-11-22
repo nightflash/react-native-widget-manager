@@ -12,15 +12,17 @@ import java.util.List;
 
 public class WidgetManagerPackage implements ReactPackage {
     private Class widgetClass;
+    private String idsField;
 
-    public WidgetManagerPackage(Class widgetClass) {
+    public WidgetManagerPackage(Class widgetClass, String idsField) {
         this.widgetClass = widgetClass;
+        this.idsField = idsField;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactApplicationContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new WidgetManagerModule(reactApplicationContext, this.widgetClass));
+        modules.add(new WidgetManagerModule(reactApplicationContext, this.widgetClass, this.idsField));
         return modules;
     }
 

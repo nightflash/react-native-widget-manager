@@ -19,8 +19,16 @@ react-native link react-native-widget-manager
  to
 
 ```java
-new WidgetManagerPackage(Widget.class)
-``` 
+new WidgetManagerPackage(Widget.class, null)
+```
+
+if you want to use `AppWidgetManager.EXTRA_APPWIDGET_IDS` field for widget IDs, or
+
+```java
+new WidgetManagerPackage(Widget.class, "mySpecificIDsField")
+```
+
+if you want to use your own field (**recommended**)
 
 where *Widget* is your widget provider java class (you should have Widget.java in your source code)
 

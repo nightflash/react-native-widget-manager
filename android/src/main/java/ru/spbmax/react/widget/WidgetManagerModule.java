@@ -17,11 +17,19 @@ import com.facebook.react.bridge.WritableNativeArray;
 public class WidgetManagerModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private Class widgetClass;
+    private String idsField;
 
-    public WidgetManagerModule(ReactApplicationContext context, Class widgetClass) {
+    public WidgetManagerModule(ReactApplicationContext context, Class widgetClass, String idsField) {
         super(context);
         this.reactContext = context;
         this.widgetClass = widgetClass;
+
+        if (idsField == null) {
+            this.idsField = AppWidgetManager.EXTRA_APPWIDGET_IDS;
+        } else {
+            this.idsField = idsField;
+        }
+
     }
 
     final private String _moduleName = "RNWidgetManager";
@@ -68,7 +76,7 @@ public class WidgetManagerModule extends ReactContextBaseJavaModule {
 
         Intent intent = new Intent();
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        intent.putExtra(this.idsField, ids);
         context.sendBroadcast(intent);
     }
 
